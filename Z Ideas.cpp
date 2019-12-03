@@ -230,7 +230,7 @@ We denote its area by S, the number of points with integer
 coordinates lying strictly inside the polygon by I and the 
 number of points lying on polygon sides by B.
 
-Then, the Pick formula states: S=I+B2−1
+Then, the Pick formula states: S=I + B/2 − 1
 In particular, if the values of I and B for a polygon are given, 
 the area can be calculated in O(1) without even knowing the vertices.
 

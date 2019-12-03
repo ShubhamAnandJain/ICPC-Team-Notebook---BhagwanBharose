@@ -56,13 +56,4 @@ typedef vector<vp32> vvp32;
 typedef map<int,int> m32;
 const int LIM=1e5+5,MOD=1e9+7;
 const ld EPS = 1e-9;
-
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-int main(){
-	fastio;
-
-	
-
-	return 0;
-}

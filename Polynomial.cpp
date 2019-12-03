@@ -12,12 +12,10 @@ namespace algebra{
 			if(!initiated) {
 				for(int i = 1; i < maxn; i *= 2) {
 					for(int j = 0; j < i; j++) {
-						w[i + j] = polar(ftype(1), pi * j / i);
-					}
+						w[i + j] = polar(ftype(1), pi * j / i);}
 				}
 				initiated = 1;
-			}
-		}
+			}}
 		template<typename T>
 		void fft(T *in, point *out, int n, int k = 1) {
 			if(n == 1) {
@@ -30,41 +28,31 @@ namespace algebra{
 					auto t = out[i + n] * w[i + n];
 					out[i + n] = out[i] - t;
 					out[i] += t;
-				}
-			}
-		}
+				}}}
 		template<typename T>
 		void mul_slow(vector<T> &a, const vector<T> &b) {
 			vector<T> res(a.size() + b.size() - 1);
 			for(size_t i = 0; i < a.size(); i++) {
 				for(size_t j = 0; j < b.size(); j++) {
 					res[i + j] += a[i] * b[j];
-				}
-			}
-			a = res;
-		}
+				}}
+			a = res;}
 		template<typename T>
 		void mul(vector<T> &a, const vector<T> &b) {
 			if(min(a.size(), b.size()) < magic) {
 				mul_slow(a, b);
-				return;
-			}
+				return;}
 			init();
 			static const int shift = 15, mask = (1 << shift) - 1;
 			size_t n = a.size() + b.size() - 1;
-			while(__builtin_popcount(n) != 1) {
-				n++;
-			}
+			while(__builtin_popcount(n) != 1) n++;
 			a.resize(n);
 			static point A[maxn], B[maxn];
 			static point C[maxn], D[maxn];
 			for(size_t i = 0; i < n; i++) {
 				A[i] = point(a[i] & mask, a[i] >> shift);
-				if(i < b.size()) {
-					B[i] = point(b[i] & mask, b[i] >> shift);
-				} else {
-					B[i] = 0;
-				}
+				if(i < b.size()) B[i] = point(b[i] & mask, b[i] >> shift); 
+				else B[i] = 0;
 			}
 			fft(A, C, n); fft(B, D, n);
 			for(size_t i = 0; i < n; i++) {
@@ -85,9 +73,7 @@ namespace algebra{
 				T A2 = llround(imag(C[i]) / t);
 				a[i] = A0 + (A1 << shift) + (A2 << 2 * shift);
 			}
-			return;
-		}
-	}
+			return;}}
 	template<typename T>
 	T bpow(T x, size_t n) {
 		return n ? n % 2 ? x * bpow(x, n - 1) : bpow(x * x, n / 2) : T(1);
@@ -95,19 +81,6 @@ namespace algebra{
 	template<typename T>
 	T bpow(T x, size_t n, T m) {
 		return n ? n % 2 ? x * bpow(x, n - 1, m) % m : bpow(x * x % m, n / 2, m) : T(1);
-	}
-	template<typename T>
-	T gcd(const T &a, const T &b) {
-		return b == T(0) ? a : gcd(b, a % b);
-	}
-	template<typename T>
-	T nCr(T n, int r) { // runs in O(r)
-		T res(1);
-		for(int i = 0; i < r; i++) {
-			res *= (n - T(i));
-			res /= (i + 1);
-		}
-		return res;
 	}
 	template<int m>
 	struct modular{
@@ -136,10 +109,7 @@ namespace algebra{
 	struct poly {
 		vector<T> a;	
 		void normalize() { // get rid of leading zeroes
-			while(!a.empty() && a.back() == T(0)) {
-				a.pop_back();
-			}
-		}
+			while(!a.empty() && a.back() == T(0)) a.pop_back();}
 		poly(){}
 		poly(T a0) : a{a0}{normalize();}
 		poly(vector<T> t) : a(t){normalize();}
@@ -180,7 +150,6 @@ namespace algebra{
 			return vector<T>(begin(a) + l, begin(a) + r);
 		}
 		poly inv(size_t n) const { // get inverse series mod x^n
-			assert(!is_zero());
 			poly ans = a[0].inv();
 			size_t a = 1;
 			while(a < n) {
@@ -216,11 +185,11 @@ namespace algebra{
 			return {res, A};
 		}
 		pair<poly, poly> divmod(const poly &b) const { // returns quotiend and remainder of a mod b
-			if(deg() < b.deg()) {
+			if(a.size() < b.a.size()) {
 				return {poly{0}, *this};
 			}
-			int d = deg() - b.deg();
-			if(min(d, b.deg()) < magic) {
+			int d = a.size() - b.a.size();
+			if(min(d, b.a.size()) < magic) {
 				return divmod_slow(b);
 			}
 			poly D = (reverse(d + 1) * b.reverse(d + 1).inv(d + 1)).mod_xk(d + 1).reverse(d + 1, 1);
@@ -246,29 +215,6 @@ namespace algebra{
 		}
 		poly operator * (const T &x) const {return poly(*this) *= x;}
 		poly operator / (const T &x) const {return poly(*this) /= x;}
-		void print() const {
-			for(auto it: a) {
-				cout << it << ' ';
-			}
-			cout << endl;
-		}
-		T eval(T x) const { // evaluates in single point x
-			T res(0);
-			for(int i = int(a.size()) - 1; i >= 0; i--) {
-				res *= x;
-				res += a[i];
-			}
-			return res;
-		}
-		T& lead() { // leading coefficient
-			return a.back();
-		}
-		int deg() const { // degree
-			return a.empty() ? -inf : a.size() - 1;
-		}
-		bool is_zero() const { // is polynomial zero
-			return a.empty();
-		}
 		T operator [](int idx) const {
 			return idx >= (int)a.size() || idx < 0 ? T(0) : a[idx];
 		}
@@ -279,22 +225,19 @@ namespace algebra{
 		bool operator != (const poly &t) const {return a != t.a;}
 		poly deriv() { // calculate derivative
 			vector<T> res;
-			for(int i = 1; i <= deg(); i++) {
+			for(int i = 1; i <= a.size(); i++) {
 				res.push_back(T(i) * a[i]);
 			}
 			return res;
 		}
 		poly integr() { // calculate integral with C = 0
 			vector<T> res = {0};
-			for(int i = 0; i <= deg(); i++) {
+			for(int i = 0; i <= a.size(); i++) {
 				res.push_back(a[i] / T(i + 1));
 			}
 			return res;
 		}
 		size_t leading_xk() const { // Let p(x) = x^k * t(x), return k
-			if(is_zero()) {
-				return inf;
-			}
 			int res = 0;
 			while(a[res] == T(0)) {
 				res++;
@@ -306,9 +249,7 @@ namespace algebra{
 			return (deriv().mod_xk(n) * inv(n)).integr().mod_xk(n);
 		}
 		poly exp(size_t n) { // calculate exp p(x) mod x^n
-			if(is_zero()) {
-				return T(1);
-			}
+			if(a.empty()) return T(1);
 			assert(a[0] == T(0));
 			poly ans = T(1);
 			size_t a = 1;
@@ -323,97 +264,17 @@ namespace algebra{
 			return k ? k % 2 ? (*this * pow_slow(k - 1, n)).mod_xk(n) : (*this * *this).mod_xk(n).pow_slow(k / 2, n) : T(1);
 		}
 		poly pow(size_t k, size_t n) { // calculate p^k(n) mod x^n
-			if(is_zero()) {
-				return *this;
-			}
-			if(k < magic) {
-				return pow_slow(k, n);
-			}
+			if(a.empty())  return *this;
+			if(k < magic)  return pow_slow(k, n);
 			int i = leading_xk();
 			T j = a[i];
 			poly t = div_xk(i) / j;
 			return bpow(j, k) * (t.log(n) * T(k)).exp(n).mul_xk(i * k).mod_xk(n);
 		}
-		poly mulx(T x) { // component-wise multiplication with x^k
-			T cur = 1;
-			poly res(*this);
-			for(int i = 0; i <= deg(); i++) {
-				res.coef(i) *= cur;
-				cur *= x;
-			}
-			return res;
-		}
-		poly mulx_sq(T x) { // component-wise multiplication with x^{k^2}
-			T cur = x;
-			T total = 1;
-			T xx = x * x;
-			poly res(*this);
-			for(int i = 0; i <= deg(); i++) {
-				res.coef(i) *= total;
-				total *= cur;
-				cur *= xx;
-			}
-			return res;
-		}
-		vector<T> chirpz_even(T z, int n) { // P(1), P(z^2), P(z^4), ..., P(z^2(n-1))
-			int m = deg();
-			if(is_zero()) {
-				return vector<T>(n, 0);
-			}
-			vector<T> vv(m + n);
-			T zi = z.inv();
-			T zz = zi * zi;
-			T cur = zi;
-			T total = 1;
-			for(int i = 0; i <= max(n - 1, m); i++) {
-				if(i <= m) {vv[m - i] = total;}
-				if(i < n) {vv[m + i] = total;}
-				total *= cur;
-				cur *= zz;
-			}
-			poly w = (mulx_sq(z) * vv).substr(m, m + n).mulx_sq(z);
-			vector<T> res(n);
-			for(int i = 0; i < n; i++) {
-				res[i] = w[i];
-			}
-			return res;
-		}
-		vector<T> chirpz(T z, int n) { // P(1), P(z), P(z^2), ..., P(z^(n-1))
-			auto even = chirpz_even(z, (n + 1) / 2);
-			auto odd = mulx(z).chirpz_even(z, n / 2);
-			vector<T> ans(n);
-			for(int i = 0; i < n / 2; i++) {
-				ans[2 * i] = even[i];
-				ans[2 * i + 1] = odd[i];
-			}
-			if(n % 2 == 1) {
-				ans[n - 1] = even.back();
-			}
-			return ans;
-		}
 	};
 	template<typename T>
 	poly<T> operator * (const T& a, const poly<T>& b) {
 		return b * a;
-	}
-	template<typename T>
-	poly<T> xk(int k) { // return x^k
-		return poly<T>{1}.mul_xk(k);
-	}
-	template<typename T>
-	T resultant(poly<T> a, poly<T> b) { // computes resultant of a and b
-		if(b.is_zero()) {
-			return 0;
-		} else if(b.deg() == 0) {
-			return bpow(b.lead(), a.deg());
-		} else {
-			int pw = a.deg();
-			a %= b;
-			pw -= a.deg();
-			T mul = bpow(b.lead(), pw) * T((b.deg() & a.deg() & 1) ? -1 : 1);
-			T ans = resultant(b, a);
-			return ans * mul;
-		}
 	}
 };
 using namespace algebra;
