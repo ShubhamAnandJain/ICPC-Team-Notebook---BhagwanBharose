@@ -281,3 +281,6 @@ Strongly Connected component and Condensation Graph:
         }
     }
 
+FFT Matrices:
+
+XOR FFT: 1 1 / 1 -1, AND FFT: 0 1/ 1 1, OR FFT: 1 1/ 1 0
