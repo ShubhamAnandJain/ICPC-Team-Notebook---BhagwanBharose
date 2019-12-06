@@ -93,6 +93,12 @@ void compute(int l, int r, int optl, int optr)
     compute(mid + 1, r, opt, optr);
 }
 
+Knuth Optimization:
+
+dp[i][j] = mini < k < j{dp[i][k] + dp[k][j]} + C[i][j]
+monotonicity : C[b][c] <= C[a][d]
+quadrangle inequality: C[a][c]+C[b][d] <= C[a][d]+C[b][c]
+
 Lyndon factorization: We can get the minimum cyclic shift.
 Factorize the string as s = w1w2w3...wn
 
@@ -284,3 +290,27 @@ Strongly Connected component and Condensation Graph:
 FFT Matrices:
 
 XOR FFT: 1 1 / 1 -1, AND FFT: 0 1/ 1 1, OR FFT: 1 1/ 1 0
+
+Harmonic lemma:
+
+for (int i = 1, la; i <= n; i = la + 1) {
+		la = n / (n / i);
+		v.pb(mp(n/i,la-i+1));
+	//la-i+1 denotes the number of occurences of n/i
+	//n / x yields the same value for i <= x <= la.
+	}
+
+Mobius inversion theory:
+
+if f and g are multiplicative, then their dirichlet convolution,
+i.e sum_{d|x} f(d)g(x/d) is also multiplicative. eg. choose g = 1
+
+Properties:
+
+1. If g(n) = sum_{d|n}f(d), then f(n) = sum_{d|x}g(d)u(n/d).
+2. sum_{d|n}u(d) = [n==1]
+
+Standard question: Number of co-prime integers in range 1,n
+Answer: f(n) = sum_{d = 1 to n} u(d)floor(n/d)^2
+
+Euler totient: phi(totient fn) = u*n (dirichlet convolution)

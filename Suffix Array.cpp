@@ -1,43 +1,50 @@
-struct SuffixArray{
-	v32 a;
-	string s;
-	SuffixArray(const string& _s): s(_s+'\0'){ // e.g. s="aba\0" will have a=[3,2,0,1]
-		int N=s.size();
-		vector<pair<ll,int> > b(N);
-		a.resize(N);
-		for(int i=0;i<N;++i){
-			b[i].first=s[i];
-			b[i].second=i;
-		}
-		int q=8;
-		while((1<<q)<N) q++;
-		for(int moc=0;;moc++){
-			sort(all(b));
-			a[b[0].second]=0;
-			for(int i=1;i<N;++i){
-				a[b[i].second]=a[b[i-1].second]+(b[i-1].first!=b[i].first);
-			}
-			if((1<<moc)>=N) break;
-			for(int i=0;i<N;++i){
-				b[i].first=(ll)a[i]<<q;
-				if(i+(1<<moc)<N) b[i].first+=a[i+(1<<moc)];
-				b[i].second=i;
-			}
-		}
-		for(int i=0;i<N;++i) a[i]=b[i].second;
-	}
-	v32 lcp(){ // longest common prefixes:res[i]=lcp(a[i],a[i-1]) e.g. s="aba\0" will have res=[0,0,1,0] 
-		int n=a.size(),h=0;
-		v32 inv(n),res(n);
-		for(int i=0;i<n;++i) inv[a[i]]=i;
-		for(int i=0;i<n;++i){
-			if(inv[i]>0){
-				int p0=a[inv[i]-1];
-				while(s[i+h]==s[p0+h]) h++;
-				res[inv[i]]=h;
-				if(h>0) h--;
-			}
-		}
-		return res;
-	}
-};
+vector<int> sort_cyclic_shifts(string const& s) {
+    int n = s.size();
+    const int alphabet = 256;
+    vector<int> p(n), c(n), cnt(max(alphabet, n), 0);
+    for (int i = 0; i < n; i++)
+        cnt[s[i]]++;
+    for (int i = 1; i < alphabet; i++)
+        cnt[i] += cnt[i-1];
+    for (int i = 0; i < n; i++)
+        p[--cnt[s[i]]] = i;
+    c[p[0]] = 0;
+    int classes = 1;
+    for (int i = 1; i < n; i++) {
+        if (s[p[i]] != s[p[i-1]])
+            classes++;
+        c[p[i]] = classes - 1;
+    }
+    vector<int> pn(n), cn(n);
+    for (int h = 0; (1 << h) < n; ++h) {
+        for (int i = 0; i < n; i++) {
+            pn[i] = p[i] - (1 << h);
+            if (pn[i] < 0)
+                pn[i] += n;
+        }
+        fill(cnt.begin(), cnt.begin() + classes, 0);
+        for (int i = 0; i < n; i++)
+            cnt[c[pn[i]]]++;
+        for (int i = 1; i < classes; i++)
+            cnt[i] += cnt[i-1];
+        for (int i = n-1; i >= 0; i--)
+            p[--cnt[c[pn[i]]]] = pn[i];
+        cn[p[0]] = 0;
+        classes = 1;
+        for (int i = 1; i < n; i++) {
+            pair<int, int> cur = {c[p[i]], c[(p[i] + (1 << h)) % n]};
+            pair<int, int> prev = {c[p[i-1]], c[(p[i-1] + (1 << h)) % n]};
+            if (cur != prev)
+                ++classes;
+            cn[p[i]] = classes - 1;
+        }
+        c.swap(cn);
+    }
+    return p;
+}
+vector<int> suffix_array_construction(string s) {
+    s += "$";
+    vector<int> sorted_shifts = sort_cyclic_shifts(s);
+    sorted_shifts.erase(sorted_shifts.begin());
+    return sorted_shifts;
+}
