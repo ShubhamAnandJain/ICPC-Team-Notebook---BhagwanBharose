@@ -288,3 +288,19 @@ for(int mask = 0; mask < (1<<N); ++mask){
 for(int i = 0; i<(1<<N); ++i) F[i] = A[i];
 for(int i = 0;i < N; ++i) for(int mask = 0; mask < (1<<N); ++mask){
 	if(mask & (1<<i)) F[mask] += F[mask^(1<<i)];}
+
+15 puzzle problem: existence of solution
+
+int a[16];
+for (int i=0; i<16; ++i)
+    cin >> a[i];
+int inv = 0;
+for (int i=0; i<16; ++i)
+    if (a[i])
+        for (int j=0; j<i; ++j)
+            if (a[j] > a[i])
+                ++inv;
+for (int i=0; i<16; ++i)
+    if (a[i] == 0)
+        inv += 1 + i / 4;
+puts ((inv & 1) ? "No Solution" : "Solution Exists");
