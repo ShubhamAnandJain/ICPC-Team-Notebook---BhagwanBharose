@@ -1,5 +1,4 @@
-string s;
-int n;
+string s; int n;
 
 struct node {
     int l, r, par, link;
@@ -10,16 +9,12 @@ struct node {
     int len()  {  return r - l;  }
     int &get (char c) {
         if (!next.count(c))  next[c] = -1;
-        return next[c];
-    }
-};
-node t[MAXN];
-int sz;
+        return next[c];}};
+node t[MAXN]; int sz;
 
 struct state {
     int v, pos;
-    state (int v, int pos) : v(v), pos(pos)  {}
-};
+    state (int v, int pos) : v(v), pos(pos)  {}};
 state ptr (0, 0);
 
 state go (state st, int l, int r) {
@@ -34,10 +29,8 @@ state go (state st, int l, int r) {
             if (r-l < t[st.v].len() - st.pos)
                 return state (st.v, st.pos + r-l);
             l += t[st.v].len() - st.pos;
-            st.pos = t[st.v].len();
-        }
-    return st;
-}
+            st.pos = t[st.v].len();}
+    return st;}
 
 int split (state st) {
     if (st.pos == t[st.v].len())
@@ -51,23 +44,20 @@ int split (state st) {
     t[id].get( s[v.l+st.pos] ) = st.v;
     t[st.v].par = id;
     t[st.v].l += st.pos;
-    return id;
-}
+    return id;}
 
 int get_link (int v) {
     if (t[v].link != -1)  return t[v].link;
     if (t[v].par == -1)  return 0;
     int to = get_link (t[v].par);
-    return t[v].link = split (go (state(to,t[to].len()), t[v].l + (t[v].par==0), t[v].r));
-}
+    return t[v].link = split (go (state(to,t[to].len()), t[v].l + (t[v].par==0), t[v].r));}
 
 void tree_extend (int pos) {
     for(;;) {
         state nptr = go (ptr, pos, pos+1);
         if (nptr.v != -1) {
             ptr = nptr;
-            return;
-        }
+            return;}
 
         int mid = split (ptr);
         int leaf = sz++;
@@ -76,12 +66,9 @@ void tree_extend (int pos) {
 
         ptr.v = get_link (mid);
         ptr.pos = t[ptr.v].len();
-        if (!mid)  break;
-    }
-}
+        if (!mid)  break;}}
 
 void build_tree() {
     sz = 1;
     for (int i=0; i<n; ++i)
-        tree_extend (i);
-}
+        tree_extend (i);}

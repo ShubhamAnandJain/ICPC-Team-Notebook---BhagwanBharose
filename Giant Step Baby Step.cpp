@@ -10,17 +10,13 @@ ll solve(ll a,ll b,ll MOD){
     vector<pair<ll,int> > vals;
     forsn(i,1,n+1){
     	vals.pb(mp(cur,i));
-        cur=(cur*an)%MOD;
-    }
+        cur=(cur*an)%MOD;}
     cur=b;
     sort(all(vals));
     forn(i,n+1){
     	auto in=lower_bound(all(vals),mp(cur,-1))-vals.begin();
     	if(in!=vals.size() && vals[in].fi==cur){
     		ll ans=n*(ll)vals[in].se-i;
-    		if(ans<MOD) return ans;
-    	}
-        cur=(cur*a)%MOD;
-    }
-    return -1;
-}
+    		if(ans<MOD) return ans;}
+        cur=(cur*a)%MOD;}
+    return -1;}

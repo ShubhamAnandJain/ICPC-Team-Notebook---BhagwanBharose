@@ -11,21 +11,16 @@ struct MaxMatchingEdmonds{
           a=base[a];
           used[a]=1;
           if(match[a]==-1) break;
-          a=p[match[a]];
-        }
+          a=p[match[a]];}
         while(1){
           b=base[b];
           if(used[b]) return b;
-          b=p[match[b]];
-        }
-    }
+          b=p[match[b]];}}
     void markPath(int v,int b,int children) {
         for(;base[v]!=b;v=p[match[v]]){
           blossom[base[v]]=blossom[base[match[v]]]=1;
           p[v]=children;
-          children=match[v];
-        }
-    }
+          children=match[v];}}
     int findPath(int root) {
         vector<bool> used(n,0);
         p.assign(n,-1);
@@ -50,20 +45,14 @@ struct MaxMatchingEdmonds{
                   base[i]=curbase;
                   if(!used[i]){
                     used[i]=1;
-                    q[qt++]=i;
-                  }
-                }
+                    q[qt++]=i;}}
             }else if(p[to]==-1){
               p[to]=v;
               if(match[to]==-1) return to;
               to=match[to];
               used[to]=1;
-              q[qt++]=to;
-            }
-          }
-        }
-        return -1;
-    }
+              q[qt++]=to;}}}
+        return -1;}
     int maxMatching(vv32 &graph){
         n=graph.size();
         g=graph;
@@ -77,12 +66,7 @@ struct MaxMatchingEdmonds{
               int ppv=match[pv];
               match[v]=pv;
               match[pv]=v;
-              v=ppv;
-            }
-          }
-        }
+              v=ppv;}}}
         int matches=0;
         for(int i=0;i<n;++i) if(match[i]!=-1) ++matches;
-        return matches/2;
-    }
-};
+        return matches/2;}};

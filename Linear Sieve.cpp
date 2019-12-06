@@ -11,8 +11,4 @@ void sieve(){
                 mu[i*it]=0;
                 break;
             }else{
-                mu[i*it]=mu[i]*mu[it];
-            }
-        }
-    }
-}
+                mu[i*it]=mu[i]*mu[it];}}}}

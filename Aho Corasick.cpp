@@ -2,8 +2,7 @@ struct AhoCorasick{
 	enum {alpha=26,first='a'};
 	struct Node{
 		int back, next[alpha], start = -1, end = -1, nmatches = 0;
-		Node(int v){memset(next,v,sizeof(next));}
-	};
+		Node(int v){memset(next,v,sizeof(next));}};
 	vector<Node> N;
 	vector<int> backp;
 	inline void insert(string &s,int j){
@@ -17,12 +16,10 @@ struct AhoCorasick{
 		if(N[n].end==-1) N[n].start=j;
 		backp.push_back(N[n].end);
 		N[n].end=j;
-		N[n].nmatches++;
-	}
+		N[n].nmatches++;}
 	void clear(){
 		N.clear();
-		backp.clear();
-	}
+		backp.clear();}
 	void create(vector<string>& pat){
 		N.emplace_back(-1);
 		for(int i=0;i<pat.size();++i) insert(pat[i],i);
@@ -38,11 +35,7 @@ struct AhoCorasick{
 					N[ed].back=y;
 					(N[ed].end==-1 ? N[ed].end:backp[N[ed].start])=N[y].end;
 					N[ed].nmatches+=N[y].nmatches;
-					q.push(ed);
-				}
-			}
-		}
-	}
+					q.push(ed);}}}}
 	ll find(string word){
 		int n=0;
 		// vector<int> res; 
@@ -50,11 +43,8 @@ struct AhoCorasick{
 		for(auto &c: word){
 			n=N[n].next[c-first];
 			// res.push_back(N[n].end);
-			count+=N[n].nmatches;
-		}
-		return count;
-	}
-};
+			count+=N[n].nmatches;}
+		return count;}};
 struct AhoOnline{
 	int sz=0;
 	vector<string> v[25];
@@ -65,18 +55,13 @@ struct AhoOnline{
 		for(int i=0;i<val;++i){
 			for(auto &it: v[i]) cur.push_back(it);
 			c[i].clear();
-			v[i].clear();
-		}
+			v[i].clear();}
 		cur.push_back(p);
 		c[val].create(cur);
-		++sz;
-	}
+		++sz;}
 	ll query(string &p){
 		ll ans=0;
 		for(int i=0;i<25;++i){
 			if((1<<i)&sz) ans+=c[i].find(p);
-			if((1<<i)>=sz) break;
-		}
-		return ans;
-	}
-} add,del;
+			if((1<<i)>=sz) break;}
+		return ans;}} add,del;

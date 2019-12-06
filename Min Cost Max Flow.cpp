@@ -5,8 +5,7 @@ struct MCMF{
   struct Edge{
     int u,v,rind;
     FLOW cap,flow;
-    COST cost;
-  };
+    COST cost;};
   int N;
   vector<COST> pot,dist;
   vector<vector<Edge> > v;
@@ -15,12 +14,10 @@ struct MCMF{
   void AddEdge(int to,int from,int cap,int cost){
     if(to==from){
       assert(cost>=0);
-      return;
-    }
+      return;}
     int i1=v[to].size(),i2=v[from].size();
     v[to].push_back({to,from,i2,cap,0,cost});
-    v[from].push_back({from,to,i1,0,0,-cost});
-  }
+    v[from].push_back({from,to,i1,0,0,-cost});}
   void setpi(int s){
     pot.assign(N,CINF);
     pot[s]=0;
@@ -32,14 +29,8 @@ struct MCMF{
           cur=pot[i];
           for(auto &e: v[i]){
             if(e.cap>0 && (nw=cur+e.cost)<pot[e.v]){
-              pot[e.v]=nw; ch=1;
-            }
-          }
-        }
-      }
-    }
-    assert(ite>=0); // Else negative cycle
-  }
+              pot[e.v]=nw; ch=1;}}}}}
+    assert(ite>=0);} // Else negative cycle
   bool path(int s,int t){
     fill(dist.begin(),dist.end(),CINF);
     dist[s]=0;
@@ -62,16 +53,11 @@ struct MCMF{
           dist[e.v]=val;
           par[e.v]=make_pair(node,cnt);
           if(its[e.v]==pq.end()) its[e.v]=pq.push({-val,e.v});
-              else pq.modify(its[e.v],{-val,e.v});
-        }
-        ++cnt;
-      }
-    }
+              else pq.modify(its[e.v],{-val,e.v});}
+        ++cnt;}}
     for(int i=0;i<N;++i){
-      pot[i]=min(pot[i]+dist[i],FINF);
-    }
-    return ok;
-  }
+      pot[i]=min(pot[i]+dist[i],FINF);}
+    return ok;}
   pair<FLOW,COST> SolveMCMF(int s,int t,FLOW need=FINF,bool neg=0){
     FLOW tot=0,cflow=0; COST tcost=0;
     if(s==t) return {tot,tcost};
@@ -83,17 +69,12 @@ struct MCMF{
       for(int node=t,u,ind;node!=s;node=u){
         u=par[node].first;
         ind=par[node].second;
-        cflow=min(cflow,v[u][ind].cap-v[u][ind].flow);
-      }
+        cflow=min(cflow,v[u][ind].cap-v[u][ind].flow);}
       tot+=cflow; need-=cflow;
       for(int node=t,u,ind,rind;node!=s;node=u){
         u=par[node].first;
         ind=par[node].second;
         rind=v[u][ind].rind;
         v[u][ind].flow+=cflow;
-        v[node][rind].flow-=cflow;
-      }
-    }
-    return {tot,tcost};
-  }
-};
+        v[node][rind].flow-=cflow;}}
+    return {tot,tcost};}};

@@ -17,8 +17,4 @@ void z_func(v32 &s,v32 &z){
 			else{
 				L=i;
 				while(R<sz && s[R-L]==s[R]) R++;
-				z[i]=R-L; R--;   
-			}
-		}
-	}
-}
+				z[i]=R-L; R--;   }}}}

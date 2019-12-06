@@ -8,7 +8,5 @@ ll lucas(ll n,ll m,int p){
 		ll a=n%p,b=m%p;
 		if(a<b) return 0;
 		res=((res*fact[a]%p)*(invfact[b]%p)%p)*(invfact[a-b]%p)%p;
-		n/=p; m/=p;
-	}
-	return res;
-}
+		n/=p; m/=p;}
+	return res;}
