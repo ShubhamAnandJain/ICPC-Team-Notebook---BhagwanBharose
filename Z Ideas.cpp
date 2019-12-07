@@ -43,13 +43,11 @@ int n;
 long long C(int i, int j);
 vector<long long> dp_before(n), dp_cur(n);
 // compute dp_cur[l], ... dp_cur[r] (inclusive)
-void compute(int l, int r, int optl, int optr)
-{
+void compute(int l, int r, int optl, int optr){
     if (l > r)
         return;
     int mid = (l + r) >> 1;
     pair<long long, int> best = {INF, -1};
-
     for (int k = optl; k <= min(mid, optr); k++) {
         best = min(best, {dp_before[k] + C(k, mid), k});}
     dp_cur[mid] = best.first;
@@ -86,7 +84,6 @@ string min_cyclic_string(string s) {
 Rank of a matrix:
 
 const double EPS = 1E-9;
-
 int compute_rank(vector<vector<double>> A) {
     int n = A.size();
     int m = A[0].size();
@@ -113,7 +110,6 @@ Determinant of a matrix:
 const double EPS = 1E-9;
 int n;
 vector < vector<double> > a (n, vector<double> (n));
-
 double det = 1;
 for (int i=0; i<n; ++i) {
     int k = i;
@@ -166,22 +162,13 @@ double simpson_integration(double a, double b){
 
 Picks theorem:
 
-Given a certain lattice polygon with non-zero area.
-
-We denote its area by S, the number of points with integer 
-coordinates lying strictly inside the polygon by I and the 
-number of points lying on polygon sides by B.
-
-Then, the Pick formula states: S=I + B/2 - 1
-In particular, if the values of I and B for a polygon are given, 
-the area can be calculated in O(1) without even knowing the vertices.
+Given a certain lattice polygon with non-zero area. We denote its area by S, the number of points with integer coordinates lying strictly inside the polygon by I and the number of points lying on polygon sides by B. Then, the Pick formula states: S=I + B/2 - 1 In particular, if the values of I and B for a polygon are given, the area can be calculated in O(1) without even knowing the vertices.
 
 Strongly Connected component and Condensation Graph:
 
     vector < vector<int> > g, gr;
     vector<bool> used;
     vector<int> order, component;
-
     void dfs1 (int v) {
         used[v] = true;
         for (size_t i=0; i<g[v].size(); ++i)
@@ -225,7 +212,6 @@ Mobius inversion theory:
 
 if f and g are multiplicative, then their dirichlet convolution,
 i.e sum_{d|x} f(d)g(x/d) is also multiplicative. eg. choose g = 1
-
 Properties:
 1. If g(n) = sum_{d|n}f(d), then f(n) = sum_{d|x}g(d)u(n/d).
 2. sum_{d|n}u(d) = [n==1]
@@ -247,7 +233,6 @@ Fibonacci Identities:
 6. n>=phi(m) => x^n = x^(phi(m)+n%phi(m)) mod m 
 
 Ternary Search
-
 double ternary_search(double l, double r) {
     double eps = 1e-9;              //set the error limit here
     while (r - l > eps) {
@@ -260,7 +245,6 @@ double ternary_search(double l, double r) {
     return f(l);}                    //return the maximum of f(x) in [l, r]
 
 Counting labeled graphs:
-
 The total number of labelled graphs is G_n = 2^{n(n-1)/2}
 Number of connected labelled graphs is C_n = G_n - 1/n*(sum_{k = 1 to n-1} k.(nCk).C_{k}G_{n-k}
 Number of labelled graphs with k components: D[n][k] = sum_{s = 1 to n} ((n-1)C(s-1))C_{s}D[n-s][k-1]
@@ -290,7 +274,6 @@ for(int i = 0;i < N; ++i) for(int mask = 0; mask < (1<<N); ++mask){
 	if(mask & (1<<i)) F[mask] += F[mask^(1<<i)];}
 
 15 puzzle problem: existence of solution
-
 int a[16];
 for (int i=0; i<16; ++i)
     cin >> a[i];
@@ -304,3 +287,54 @@ for (int i=0; i<16; ++i)
     if (a[i] == 0)
         inv += 1 + i / 4;
 puts ((inv & 1) ? "No Solution" : "Solution Exists");
+
+Largest repetition string: (s = x+x)
+vector<int> z_function(string const& s) {
+    int n = s.size();
+    vector<int> z(n);
+    for (int i = 1, l = 0, r = 0; i < n; i++) {
+        if (i <= r) z[i] = min(r-i+1, z[i-l]);
+        while (i + z[i] < n && s[z[i]] == s[i+z[i]])
+            z[i]++;
+        if (i + z[i] - 1 > r) {
+            l = i;
+            r = i + z[i] - 1;}}
+    return z;}
+int get_z(vector<int> const& z, int i) {
+    if (0 <= i && i < (int)z.size()) return z[i];
+    else return 0;}
+vector<pair<int, int>> repetitions;
+void convert_to_repetitions(int shift, bool left, int cntr, int l, int k1, int k2) {
+    for (int l1 = max(1, l - k2); l1 <= min(l, k1); l1++) {
+        if (left && l1 == l) break;
+        int l2 = l - l1;
+        int pos = shift + (left ? cntr - l1 : cntr - l - l1 + 1);
+        repetitions.emplace_back(pos, pos + 2*l - 1);}}
+void find_repetitions(string s, int shift = 0) {
+    int n = s.size();
+    if (n == 1)
+        return;
+    int nu = n / 2;
+    int nv = n - nu;
+    string u = s.substr(0, nu);
+    string v = s.substr(nu);
+    string ru(u.rbegin(), u.rend());
+    string rv(v.rbegin(), v.rend());
+    find_repetitions(u, shift);
+    find_repetitions(v, shift + nu);
+    vector<int> z1 = z_function(ru);
+    vector<int> z2 = z_function(v + '#' + u);
+    vector<int> z3 = z_function(ru + '#' + rv);
+    vector<int> z4 = z_function(v);
+    for (int cntr = 0; cntr < n; cntr++) {
+        int l, k1, k2;
+        if (cntr < nu) {
+            l = nu - cntr;
+            k1 = get_z(z1, nu - cntr);
+            k2 = get_z(z2, nv + 1 + cntr);
+        } else {
+            l = cntr - nu + 1;
+            k1 = get_z(z3, nu + 1 + nv - 1 - (cntr - nu));
+            k2 = get_z(z4, (cntr - nu) + 1);}
+        if (k1 + k2 >= l)
+            convert_to_repetitions(shift, cntr < nu, cntr, l, k1, k2);}}

@@ -3,9 +3,6 @@ Tech
 Recursion
 DIVIDE AND CONQUER
 	Finding interesting points in N log N
-ALGORITHM ANALYSIS
-	Master theorem
-	Amortized time complexity
 GREEDY ALGORITHM
 	Scheduling
 	Max contiguous subvector sum
@@ -21,12 +18,10 @@ GRAPH THEORY
 	Bellman-Ford
 	Konigs theorem and vertex cover
 	Min-cost max flow
-	Lovasz toggle
 	Matrix tree theorem
 	Maximal matching, general graphs
 	Hopcroft-Karp
 	Halls marriage theorem
-	Graphical sequences
 	Floyd-Warshall
 	Euler cycles
 	Flow networks
@@ -37,8 +32,7 @@ GRAPH THEORY
 	Topological sorting
 	Strongly connected components
 	2-SAT
-	Cut vertices, cut-edges and biconnected
-	components
+	Cut vertices, cut-edges and biconnected components
 	Edge coloring
 	* Trees
 	Vertex coloring
@@ -52,20 +46,15 @@ DYNAMIC PROGRAMMING
 	Coin change
 	Longest common subsequence
 	Longest increasing subsequence
-	Number of paths in a dag
-	Shortest path in a dag
-	Dynprog over intervals
-	Dynprog over subsets
-	Dynprog over probabilities
-	Dynprog over trees
+	Number of paths, shortest path in a dag
+	Dynprog over intervals, subsets, probabilities, trees
 	3^n set cover
 	Divide and conquer
 	Knuth optimization
 	Convex hull optimizations
 	RMQ (sparse table a.k.a 2^k-jumps)
 	Bitonic cycle
-	Log partitioning (loop over most
-	restricted)
+	Log partitioning (loop over most restricted)
 COMBINATORICS
 	Computation of binomial coefficients
 	Pigeon-hole principle
@@ -129,8 +118,7 @@ GEOMETRY
 	KD-trees
 	All segment-segment intersection
 SWEEPING
-	Discretization (convert to events and
-	sweep)
+	Discretization (convert to events and sweep)
 	Angle sweeping
 	Line sweeping
 	Discrete second derivatives
@@ -157,7 +145,6 @@ DATA STRUCTURES
 	Heavy-light decomposition
 	Centroid decomposition
 	Lazy propagation
-	position
 	Self-balancing trees
 	Convex hull trick
 	Monotone queues / monotone stacks / sliding queues
