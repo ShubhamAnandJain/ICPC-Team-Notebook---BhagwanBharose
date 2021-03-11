@@ -314,3 +314,61 @@ int pAndPoly(vector<PT> pv, PT p){
 				if(y>0) j++;}
 			return(j%2);}}
 	return 1;}
+
+double maxdist(vector<PT> poly){
+	//Rotating calliper method to find max distance in a convex polygon
+	// If not convex, first run convex hull algo then use this function
+	int n = poly.size();
+	double res = 0;
+	for(int i = 0, j = n<2?0:1; i<j;i++){
+		for(;; j = (j+1)%n){
+			res = max(res,dist(poly[i],poly[j])*dist(poly[i],poly[j]));
+			PT dummy;
+			dummy.x = 0, dummy.y = 0;
+			if(sideSign(dummy,poly[(j+1)%n]-poly[j],poly[i+1]-poly[i]) >= 0) break;
+		}
+	}
+	return res;
+}	
+
+template <class T> inline int sgn(const T& x) { return (T(0) < x) - (x < T(0)); }
+
+template <class F1, class F2>
+int pointVsConvexPolygon(const Point<F1>& point, const Polygon<F2>& poly, int top) {
+  if (point < poly[0] || point > poly[top]) return 1;
+  auto orientation = ccw(point, poly[top], poly[0]);
+  if (orientation == 0) {
+    if (point == poly[0] || point == poly[top]) return 0;
+    return top == 1 || top + 1 == poly.size() ? 0 : -1;
+  } else if (orientation < 0) {
+    auto itRight = lower_bound(begin(poly) + 1, begin(poly) + top, point);
+    return sgn(ccw(itRight[0], point, itRight[-1]));
+  } else {
+    auto itLeft = upper_bound(poly.rbegin(), poly.rend() - top-1, point);
+    return sgn(ccw(itLeft == poly.rbegin() ? poly[0] : itLeft[-1], point, itLeft[0]));
+  }
+}
+
+PT perp(PT p) {
+	PT r; r.x = -p.y; r.y = p.x;
+	return r;}
+
+//Code for tangency between two circles
+//if there are 2 tangents, it fills out with two pairs of points
+//if there is 1 tangent, the circles are tangent to each other at some point P, out just contains P 4 times
+//if there are 0 tangents, it does nothing
+//if the circles are identical, it aborts.
+//Set r2 = 0 to get tangency from a point to a circle
+int tangents(pt o1, double r1, pt o2, double r2, bool inner, vector<
+pair<pt,pt>> &out) {
+if (inner) r2 = -r2;
+pt d = o2-o1;
+double dr = r1-r2, d2 = sq(d), h2 = d2-dr*dr;
+if (d2 == 0 || h2 < 0) {assert(h2 != 0); return 0;}
+for (double sign : {-1,1}) {
+pt v = (d*dr + perp(d)*sqrt(h2)*sign)/d2;
+out.push_back({o1 + v*r1, o2 + v*r2});
+}
+return 1 + (h2 > 0);
+}
+
